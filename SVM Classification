@@ -1,0 +1,54 @@
+# Import required libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+
+# Sample dataset
+data = {
+    'age':[22,21,23,25,45,46,45],
+    'income':[15000,15000,25000,40000,50000,50000,50000],
+    'buy_laptop':[0,0,1,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# Features and target
+X = df[['age','income']]
+y = df['buy_laptop']
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=0)
+
+# Create SVM model
+model = SVC(kernel='linear')
+
+# Train model
+model.fit(X_train, y_train)
+
+# Prediction
+y_pred = model.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Predicted values:", y_pred)
+print("Accuracy:", accuracy)
+
+# ------- Dataset Graph -------
+plt.figure()
+
+plt.scatter(
+    df['age'],
+    df['income'],
+    c=df['buy_laptop'],
+    s=200
+)
+
+plt.xlabel("Age")
+plt.ylabel("Income")
+plt.title("SVM Classification: Laptop Purchase")
+
+plt.show()
