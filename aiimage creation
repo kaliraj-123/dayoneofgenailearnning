@@ -1,0 +1,30 @@
+import torch
+import warnings
+from diffusers import StableDiffusionPipeline
+from IPython.display import display
+from transformers import logging
+
+# Hide warnings and logs
+warnings.filterwarnings("ignore")
+logging.set_verbosity_error()
+
+# Detect device
+device = "cuda" if torch.cuda.is_available() else "cpu"
+dtype = torch.float16 if device == "cuda" else torch.float32
+
+# Load model silently
+pipe = StableDiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=dtype
+)
+
+pipe = pipe.to(device)
+
+# Prompt
+prompt = "A futuristic city skyline at sunrice with realestic and natchural  , digital art"
+
+# Generate image
+image = pipe(prompt, num_inference_steps=15).images[0]
+
+# Show only output
+display(image)
