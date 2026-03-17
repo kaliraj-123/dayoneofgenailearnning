@@ -1,0 +1,62 @@
+# Import required libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Sample dataset
+data = {
+    'Age': [22, 25, 47, 52, 46, 56, 48, 55],
+    'Income': [15000, 18000, 52000, 60000, 48000, 65000, 54000, 58000],
+    'Buys_Laptop': [0, 0, 1, 1, 1, 1, 1, 1]
+}
+
+df = pd.DataFrame(data)
+
+# Features and target
+X = df[['Age', 'Income']]
+y = df['Buys_Laptop']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=0
+)
+
+# Decision Tree Model
+dt_model = DecisionTreeClassifier()
+dt_model.fit(X_train, y_train)
+dt_pred = dt_model.predict(X_test)
+
+# Random Forest Model
+rf_model = RandomForestClassifier(n_estimators=10)
+rf_model.fit(X_train, y_train)
+rf_pred = rf_model.predict(X_test)
+
+# Accuracy
+dt_accuracy = accuracy_score(y_test, dt_pred)
+rf_accuracy = accuracy_score(y_test, rf_pred)
+
+print("Decision Tree Accuracy:", dt_accuracy)
+print("Random Forest Accuracy:", rf_accuracy)
+
+# -------- Dataset Visualization --------
+plt.figure(figsize=(6,4))
+plt.scatter(df['Age'], df['Income'], c=df['Buys_Laptop'], s=200)
+plt.xlabel("Age")
+plt.ylabel("Income")
+plt.title("Laptop Purchase Dataset")
+plt.show()
+
+# -------- Decision Tree Graph --------
+plt.figure(figsize=(10,6))
+plot_tree(
+    dt_model,
+    feature_names=['Age', 'Income'],
+    class_names=['No', 'Yes'],
+    filled=True
+)
+
+plt.title("Decision Tree Structure")
+plt.show()
