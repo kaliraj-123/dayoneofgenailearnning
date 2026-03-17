@@ -1,0 +1,63 @@
+# Install necessary libraries (Run this in your terminal if not already installed)
+# !pip install transformers sentencepiece torch
+
+import warnings
+from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
+
+# Ignore warnings for a cleaner output
+warnings.filterwarnings("ignore")
+
+# 1. Load model and tokenizer
+model_name = "facebook/mbart-large-50-many-to-many-mmt"
+tokenizer = MBart50TokenizerFast.from_pretrained(model_name)
+model = MBartForConditionalGeneration.from_pretrained(model_name)
+# 2. Input text
+text=input(" ")
+print("English :",text)
+
+# 3. Set source language (English)
+tokenizer.src_lang = "en_XX"
+
+# 4. Tokenize the input text
+inputs = tokenizer(text, return_tensors="pt")
+
+# 5. Generate Tamil translation
+# "ta_IN" is the language code for Tamil (India)
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["ta_IN"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("Tamil :",translation[0])
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["hi_IN"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("Hindi :",translation[0])
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["te_IN"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("Telugu :",translation[0])
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["ml_IN"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("Malayalam :",translation[0])
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["de_DE"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("German:",translation[0])
+generated_tokens = model.generate(
+    **inputs,
+    forced_bos_token_id=tokenizer.lang_code_to_id["es_XX"]
+)
+translation = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+print("Spanish:",translation[0])
+
+
