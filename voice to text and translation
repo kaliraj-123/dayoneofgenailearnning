@@ -1,0 +1,47 @@
+# Install libraries
+!apt-get install ffmpeg
+!pip install SpeechRecognition googletrans==4.0.0-rc1 gTTS pydub
+
+# Import libraries
+import speech_recognition as sr
+from googletrans import Translator
+from gtts import gTTS
+from google.colab import files
+from pydub import AudioSegment
+from IPython.display import Audio
+
+print("Upload your voice file")
+
+# Upload file
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+# Convert audio to WAV
+audio = AudioSegment.from_file(filename)
+audio.export("voice.wav", format="wav")
+
+print("Audio converted to WAV")
+
+# Speech to text
+recognizer = sr.Recognizer()
+
+with sr.AudioFile("voice.wav") as source:
+    audio_data = recognizer.record(source)
+
+text = recognizer.recognize_google(audio_data)
+
+print("Your Voice Text:", text)
+
+# Translate text
+translator = Translator()
+translated = translator.translate(text, dest="ta")
+
+print("Translated Text:", translated.text)
+
+# Text to voice
+tts = gTTS(text=translated.text, lang="ta")
+tts.save("translated_voice.mp3")
+
+print("Playing translated voice")
+
+Audio("translated_voice.mp3")
